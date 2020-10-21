@@ -1,8 +1,7 @@
-package main
+package loggingBot
 
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
-	"github.com/joho/godotenv"
 	"log"
 	"os"
 	"strconv"
@@ -11,16 +10,12 @@ import (
 
 var bot *tgbotapi.BotAPI
 
-func init() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	token := os.Getenv("BOT_TOKEN")
+func startBot() {
+	token := os.Getenv("LOGGING_BOT_TOKEN")
 	if token == "" {
 		log.Fatal("token not found")
 	}
+	var err error
 	bot, err = tgbotapi.NewBotAPI(token)
 	if err != nil {
 		log.Fatal("bot init failed:", err)
@@ -50,7 +45,7 @@ func init() {
 }
 
 func sendMsgToBot(msg string) {
-	admins := strings.Split(os.Getenv("ADMIN_CHAT"), ",")
+	admins := strings.Split(os.Getenv("LOGGING_ADMIN_CHAT"), ",")
 	for _, admin := range admins {
 		adminId, err := strconv.ParseInt(admin, 10, 64)
 		if err != nil {
