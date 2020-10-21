@@ -1,9 +1,8 @@
-##Logging bot for telegram
+# Logging bot for telegram
 
 You can use this API for send your running app logs to certain Telegram Bot
 
-***
-####usage
+## usage
 
 **First**
 
@@ -43,3 +42,5 @@ use the sample code of [example.go](https://github.com/mr-dvlpr/loggingBot/blob/
 call `logging.Start()`
 
 for sending message from API to your bot call `logging.SendError(message)`
+
+and then call `logging.Start()`
