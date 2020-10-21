@@ -1,21 +1,72 @@
 package loggingBot
 
 import (
-	"github.com/joho/godotenv"
+	"fmt"
 	"log"
+	"net/http"
+	"net/url"
+	"strconv"
+	"strings"
 )
 
-//
-//func main() {
-//	Start()
-//}
+type MandatoryInfo struct {
+	BotToken  string
+	TgUserIds string
+	ApiHost   string
+	ApiPort   int
+}
 
-func Start() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
+var mandatory *MandatoryInfo
+var initiate bool = false
+
+func Start(mi *MandatoryInfo) {
+	mandatory = mi
+	if mandatory == nil {
+		log.Panic("Mandatory Info properties not set. please initialize loggingBot first")
 	}
 
-	startWebServer()
-	startBot()
+	if mandatory.ApiHost == "" {
+		log.Fatal("API host not set. please initialize it first")
+	}
+
+	if mandatory.BotToken == "" {
+		log.Panic("Telegram bot token not set. please initialize it first")
+	}
+
+	initiate = true
+
+	mi.startBot()
+	mi.startWebServer()
+}
+
+func SendError(msg string) {
+	if !initiate {
+		log.Panic("LoggingBot not Initiated")
+	}
+	apiHost := mandatory.ApiHost
+	if apiHost == "" {
+		return
+	}
+	apiPort := strconv.Itoa(mandatory.ApiPort)
+	if apiPort == "" {
+		apiPort = "8080"
+	}
+	apiUrl := fmt.Sprintf("%s:%s", apiHost, apiPort)
+	data := url.Values{}
+	data.Set("app", "appName")
+	data.Set("text", msg)
+
+	u, _ := url.ParseRequestURI(apiUrl)
+	u.Path = "/error/"
+	urlStr := u.String() // "https://api.com/error/"
+
+	client := &http.Client{}
+	r, _ := http.NewRequest(http.MethodPost, urlStr, strings.NewReader(data.Encode()))
+	r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	resp, err := client.Do(r)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(resp.Status)
 }

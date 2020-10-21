@@ -3,22 +3,21 @@ package loggingBot
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
-	"os"
 	"strconv"
 	"strings"
 )
 
 var bot *tgbotapi.BotAPI
 
-func startBot() {
-	token := os.Getenv("LOGGING_BOT_TOKEN")
+func (mi *MandatoryInfo) startBot() {
+	token := mi.BotToken
 	if token == "" {
-		log.Fatal("token not found")
+		log.Panic("token not found")
 	}
 	var err error
 	bot, err = tgbotapi.NewBotAPI(token)
 	if err != nil {
-		log.Fatal("bot init failed:", err)
+		log.Panic("bot init failed:", err)
 	}
 
 	bot.Debug = true
@@ -44,8 +43,8 @@ func startBot() {
 	}
 }
 
-func sendMsgToBot(msg string) {
-	admins := strings.Split(os.Getenv("LOGGING_ADMIN_CHAT"), ",")
+func (mi *MandatoryInfo) sendMsgToBot(msg string) {
+	admins := strings.Split(mi.TgUserIds, ",")
 	for _, admin := range admins {
 		adminId, err := strconv.ParseInt(admin, 10, 64)
 		if err != nil {
