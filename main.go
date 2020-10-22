@@ -9,17 +9,18 @@ import (
 	"strings"
 )
 
-type MandatoryInfo struct {
+type LoggingInfo struct {
 	BotToken  string
 	TgUserIds string
 	ApiHost   string
+	AppName   string
 	ApiPort   int
 }
 
-var mandatory *MandatoryInfo
+var mandatory *LoggingInfo
 var initiate bool = false
 
-func Start(mi *MandatoryInfo) {
+func Start(mi *LoggingInfo) {
 	mandatory = mi
 	if mandatory == nil {
 		log.Panic("Mandatory Info properties not set. please initialize loggingBot first")
@@ -53,7 +54,7 @@ func SendError(msg string) {
 	}
 	apiUrl := fmt.Sprintf("%s:%s", apiHost, apiPort)
 	data := url.Values{}
-	data.Set("app", "appName")
+	data.Set("app", mandatory.AppName)
 	data.Set("text", msg)
 
 	u, _ := url.ParseRequestURI(apiUrl)

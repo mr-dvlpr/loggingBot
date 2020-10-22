@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func (mi *MandatoryInfo) startWebServer() {
+func (mi *LoggingInfo) startWebServer() {
 	r := gin.Default()
 	r.POST("/error", mi.getError)
 	apiPort := strconv.Itoa(mi.ApiPort)
@@ -21,7 +21,7 @@ func (mi *MandatoryInfo) startWebServer() {
 	fmt.Println("run gin")
 }
 
-func (mi *MandatoryInfo) getError(c *gin.Context) {
+func (mi *LoggingInfo) getError(c *gin.Context) {
 	errText := c.PostForm("text")
 	appId := c.PostForm("app")
 	if appId == "" {
