@@ -9,7 +9,7 @@ import (
 
 var bot *tgbotapi.BotAPI
 
-func (mi *LoggingInfo) startBot() {
+func (mi *serviceInfo) startBot() {
 	token := mi.BotToken
 	if token == "" {
 		log.Panic("token not found")
@@ -43,7 +43,7 @@ func (mi *LoggingInfo) startBot() {
 	}
 }
 
-func (mi *LoggingInfo) sendMsgToBot(msg string) {
+func (mi *serviceInfo) sendMsgToBot(msg string) {
 	admins := strings.Split(mi.TgUserIds, ",")
 	for _, admin := range admins {
 		adminId, err := strconv.ParseInt(admin, 10, 64)
